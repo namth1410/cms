@@ -1,44 +1,47 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,deps:node:.,package_manager:yarn:
 version: 2.1
+
 orbs:
-  node: circleci/node@5
+  node: circleci/node@4.1
+  docker: circleci/docker@1.6.0
+
 jobs:
-  build-node:
-    # Build node project
-    executor: node/default
+  build-and-push:
+    environment:
+      DOCKER_IMAGE: fsapp
+      DOCKER_TAG: latest
+    executor: docker/docker
     steps:
+      - setup_remote_docker
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
+      - docker/check:
+          docker-username: DOCKER_USER
+          docker-password: DOCKER_PASSWORD
+      - docker/build:
+          image: $DOCKER_USER/$DOCKER_IMAGE
+          tag: $DOCKER_TAG
+
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: $DOCKER_USER/$DOCKER_IMAGE
+          tag: $DOCKER_TAG
       - run:
-          command: yarn run build
-      - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
-      - run:
-          name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-      - store_artifacts:
-          path: ~/artifacts
-          destination: node-build
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
-      - run:
-          name: found github actions config
-          command: ':'
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+  # deploy:
+  #   executor: docker/docker
+  #   steps:
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - $SSH_KEY_FINGERPRINT
+  #     - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER './deploy.sh'
 workflows:
-  build:
+  cicd-ing:
     jobs:
-      - build-node
-    # - deploy:
-    #     requires:
-    #       - build-node
+      - build-and-push:
+          filters:
+            branches:
+              only:
+                - main
+      # - deploy:
+      #     requires:
+      #       - build-and-push
