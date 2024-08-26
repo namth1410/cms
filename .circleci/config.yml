@@ -7,7 +7,7 @@ orbs:
 jobs:
   build-and-push:
     environment:
-      DOCKER_IMAGE: fsapp
+      DOCKER_IMAGE: cms
       DOCKER_TAG: latest
     executor: docker/docker
     steps:
