@@ -13,35 +13,35 @@ services:
       - ./public/uploads:/opt/app/public/uploads
     ports:
       - "1337:1337"
-    # networks:
-    #   - strapi
-    # depends_on:
-    #   - strapiDB
+    networks:
+      - strapi
+    depends_on:
+      - strapiDB
 
-  # strapiDB:
-  #   container_name: strapiDB
-  #   platform: linux/amd64 #for platform error on Apple M1 chips
-  #   # restart: unless-stopped
-  #   env_file: .env
-  #   image: mysql:5.7
-  #   command: --default-authentication-plugin=mysql_native_password
-  #   environment:
-  #     # MYSQL_USER: ${DATABASE_USERNAME}
-  #     MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
-  #     MYSQL_PASSWORD: ${DATABASE_PASSWORD}
-  #     MYSQL_DATABASE: ${DATABASE_NAME}
-  #   volumes:
-  #     - strapi-data:/var/lib/mysql
-  #     #- ./data:/var/lib/mysql # if you want to use a bind folder
-  #   ports:
-  #     - "3307:3306"
-  #   networks:
-  #     - strapi
+  strapiDB:
+    container_name: strapiDB
+    platform: linux/amd64 #for platform error on Apple M1 chips
+    # restart: unless-stopped
+    env_file: .env
+    image: mariadb:10.3
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+    volumes:
+      - strapi-data:/var/lib/mysql
+      # - /var/lib/mysql:/var/lib/mysql # if you want to use a bind folder
+    ports:
+      - "3307:3306"
+    networks:
+      - strapi
 
-# volumes:
-#   strapi-data:
+volumes:
+  strapi-data:
 
-# networks:
-#   strapi:
-#     name: Strapi
-#     driver: bridge
+networks:
+  strapi:
+    name: Strapi
+    driver: bridge
