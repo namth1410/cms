@@ -27,21 +27,23 @@ jobs:
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
-  # deploy:
-  #   executor: docker/docker
-  #   steps:
-  #     - add_ssh_keys:
-  #         fingerprints:
-  #           - $SSH_KEY_FINGERPRINT
-  #     - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER './deploy.sh'
+  deploy:
+    executor: docker/docker
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - $SSH_KEY_FINGERPRINT
+      - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER './cms_start.sh'
 workflows:
   cicd-ing:
     jobs:
       - build-and-push:
+          context: fs
           filters:
             branches:
               only:
                 - main
-      # - deploy:
-      #     requires:
-      #       - build-and-push
+      - deploy:
+          context: fs
+          requires:
+            - build-and-push
