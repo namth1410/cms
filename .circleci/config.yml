@@ -33,7 +33,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - $SSH_KEY_FINGERPRINT
-      - run: ssh -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER './cms_start.sh'
+      - run: ssh -v -oStrictHostKeyChecking=no $DEPLOYED_USER@$DEPLOYED_SERVER './cms_start.sh'
 workflows:
   cicd-ing:
     jobs:
