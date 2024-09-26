@@ -16,6 +16,24 @@ jobs:
       - docker/check:
           docker-username: DOCKER_USER
           docker-password: DOCKER_PASSWORD
+      - run:
+          name: Set up environment variables
+          command: |
+            echo "Setting up environment variables..."
+            echo "HOST=${HOST}" >> .env
+            echo "PORT=${PORT}" >> .env
+            echo "APP_KEYS=${APP_KEYS}" >> .env
+            echo "API_TOKEN_SALT=${API_TOKEN_SALT}" >> .env
+            echo "ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}" >> .env
+            echo "TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT}" >> .env
+            echo "DATABASE_CLIENT=${DATABASE_CLIENT}" >> .env
+            echo "DATABASE_HOST=${DATABASE_HOST}" >> .env
+            echo "DATABASE_PORT=${DATABASE_PORT}" >> .env
+            echo "DATABASE_NAME=${DATABASE_NAME}" >> .env
+            echo "DATABASE_USERNAME=${DATABASE_USERNAME}" >> .env
+            echo "DATABASE_PASSWORD=${DATABASE_PASSWORD}" >> .env
+            echo "DATABASE_SSL=${DATABASE_SSL}" >> .env
+            echo "JWT_SECRET=${JWT_SECRET}" >> .env
       - docker/build:
           image: $DOCKER_USER/$DOCKER_IMAGE
           tag: $DOCKER_TAG
