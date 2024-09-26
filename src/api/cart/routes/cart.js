@@ -6,12 +6,4 @@
 
 const { createCoreRouter } = require("@strapi/strapi").factories;
 
-module.exports = createCoreRouter("api::cart.cart", {
-  config: {
-    findOne: {
-      auth: false,
-      policies: [],
-      middlewares: ["api::cart.strict"],
-    },
-  },
-});
+module.exports = createCoreRouter("api::cart.cart");
